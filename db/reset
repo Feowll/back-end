@@ -1,0 +1,13 @@
+#!/bin/sh
+
+set -e
+
+source ../env
+
+sudo su -l postgres -c 'dropdb feowl' || true
+sudo su -l postgres -c "dropuser '$FEOWL_DBUSER'" || true
+sudo su -l postgres -c "createuser -s '$FEOWL_DBUSER'"
+sudo su -l postgres -c "createdb -E UTF8 -T template0 '$FEOWL_DBNAME' 'Feowl database'"
+
+psql --quiet -d "$FEOWL_DBNAME" -U "$FEOWL_DBUSER" -f base.sql
+echo "Ok"
